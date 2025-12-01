@@ -216,9 +216,10 @@ document.getElementById('btnLogin').addEventListener('click', async () => {
 
       // ✅ Salvar dados no localStorage para o index.html
       localStorage.setItem('usuarioLogado', JSON.stringify({
-        idUsuario: dadosSenha.usuario?.idusuario || dadosEmail.usuario?.idusuario || 1, // use o ID correto retornado
-        nomeUsuario: dadosSenha.usuario?.nomeusuario || 'Usuário'
-      }));
+    idUsuario: dadosSenha.id,
+    nomeUsuario: dadosSenha.nome
+    }));
+
 
       // ✅ Redirecionar para a página inicial
       setTimeout(() => {
