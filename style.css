@@ -624,3 +624,90 @@ body::before {
         width: 100%;
     }
 }
+
+/* ===========================
+   FOOTER PROFISSIONAL ZENITE
+   =========================== */
+
+.zen-footer {
+    position: relative;
+    background: #2a1850; /* Roxo escuro */
+    color: #ffffff;
+    padding: 40px 20px;
+    text-align: center;
+    margin-top: 80px;
+    overflow: hidden;
+}
+
+/* brilho roxo */
+.zen-footer-blur {
+    position: absolute;
+    top: -40%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(128, 90, 255, 0.45), rgba(94, 53, 177, 0.15), transparent 70%);
+    filter: blur(100px);
+    z-index: 0;
+    opacity: 0.7;
+}
+
+.zen-footer-content {
+    position: relative;
+    z-index: 2;
+}
+
+.zen-footer-logo {
+    width: 70px;
+    margin-bottom: 10px;
+}
+
+.zen-footer-phrase {
+    font-size: 0.95rem;
+    font-weight: 300;
+    color: #e9ddff;
+    margin-bottom: 18px;
+    font-style: italic;
+}
+
+.zen-footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+    margin-bottom: 18px;
+}
+
+.zen-footer-links a {
+    color: #d1b3ff;
+    font-weight: 500;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.zen-footer-links a:hover {
+    color: #ffffff;
+    text-shadow: 0 0 8px #a87aff;
+}
+
+.zen-footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.zen-footer-social a {
+    color: #c9afff;
+    transition: 0.3s;
+}
+
+.zen-footer-social a:hover {
+    color: #ffffff;
+    transform: scale(1.12);
+}
+
+.zen-footer-copy {
+    font-size: 0.75rem;
+    opacity: 0.7;
+}
