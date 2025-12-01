@@ -78,6 +78,8 @@ const pessoaRoutes = require('./routes/pessoaRoutes');
 const produtoRoutes = require('./routes/produtoRoutes');
 const pedidoRoutes = require('./routes/pedidoRoutes');
 const pagamentoRoutes = require('./routes/pagamentoRoutes');
+const clienteRoutes = require('./routes/clienteRoutes');
+
 
 app.use('/login', loginRoutes);
 app.use('/menu', menuRoutes);
@@ -87,6 +89,7 @@ app.use('/formadepagamento', formadepagamentoRoutes);
 app.use('/funcionario', funcionariosRoutes);
 app.use('/pessoa', pessoaRoutes);
 app.use('/produto', produtoRoutes);
+app.use('/cliente', clienteRoutes);
 app.use('/pedido', pedidoRoutes);
 app.use('/pagamento', pagamentoRoutes);
 
