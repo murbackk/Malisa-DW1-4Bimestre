@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contato | Zênite</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+     <link rel="shortcut icon" href="../../backend/uploads/zenite_store_logo_star.png" type="image/x-icon">
+
+    <!-- CSS Global -->
+    <link rel="stylesheet" href="../global.css">
+
+    <style>
+        /* Layout geral da página */
+        .contact-wrapper {
+            width: 90%;
+            max-width: 1100px;
+            background: var(--color-container-bg);
+            border-radius: 16px;
+            box-shadow: var(--shadow-main);
+            padding: 40px;
+            display: flex;
+            gap: 40px;
+        }
+
+        .contact-image {
+            width: 45%;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .contact-image img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .contact-content {
+            width: 55%;
+        }
+
+        .contact-content h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: var(--color-text-light);
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 12px 0;
+            border: none;
+            border-bottom: 2px solid rgba(255,255,255,0.4);
+            background: transparent;
+            color: var(--color-text-light);
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .contact-form textarea {
+            height: 120px;
+            resize: none;
+        }
+
+        .contact-info {
+            margin-top: 20px;
+            color: var(--color-text-light);
+        }
+
+        .contact-info p strong {
+            color: var(--color-accent-blue);
+        }
+
+        .socials {
+            margin-top: 25px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .socials a {
+            color: var(--color-text-light);
+            font-size: 1.3rem;
+            text-decoration: none;
+        }
+
+        .btn-submit {
+            margin-top: 20px;
+            background: var(--color-accent-pink);
+            color: white;
+            border: none;
+            padding: 14px 22px;
+            font-weight: 700;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-submit:hover {
+            background: #c03a74;
+        }
+
+        .btn-voltar {
+    display: inline-block;
+    margin: 20px auto 30px;
+    padding: 10px 20px;
+    background: var(--color-container-bg, #210B45);
+    color: var(--color-text-light, #fff);
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.btn-voltar:hover {
+    background: var(--color-primary-purple, #6A4FFF);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
+
+.btn-voltar:active {
+    transform: scale(0.96);
+}
+
+    </style>
+
+    <script>
+        function enviarFormulario(event) {
+            event.preventDefault();
+            alert("Obrigado por contatar!");
+            window.location.href = "index.html";
+        }
+    </script>
+
+</head>
+<a href="../../index.html" class="btn-voltar">← Voltar para Home</a>
+
+<body>
+
+    <div class="contact-wrapper">
+        
+        <div class="contact-image">
+            <img src="../../backend/uploads/banner.png">
+        </div>
+
+        <div class="contact-content">
+
+            <h1>Contact Us</h1>
+
+            <form class="contact-form" onsubmit="enviarFormulario(event)">
+
+                <input type="text" placeholder="Full Name" required>
+                <input type="email" placeholder="E-mail" required>
+                <textarea placeholder="Message"></textarea>
+
+                <button class="btn-submit" type="submit">Contact Us</button>
+            </form>
+
+            <div class="contact-info">
+                <p><strong>Contact:</strong> contact@zenite.com</p>
+                <p><strong>Based in:</strong> Campo Mourão, Paraná</p>
+            </div>
+
+            <!-- coloque isto logo abaixo da <img class="logo"> -->
+<div class="socials" aria-label="Redes sociais da Zênite">
+  <!-- Instagram -->
+  <a href="https://instagram.com/mariaelismurbk" target="_blank" rel="noopener noreferrer" aria-label="Instagram - Zênite" class="social-btn">
+    <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" focusable="false">
+      <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.4"/>
+      <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/>
+    </svg>
+  </a>
+
+  <!-- LinkedIn -->
+  <a href="https://www.linkedin.com/in/seu_perfil" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn - Zênite" class="social-btn">
+    <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" focusable="false">
+      <rect x="2" y="2" width="20" height="20" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="1.4"/>
+      <path d="M6 9.5v8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      <circle cx="6" cy="6.5" r="1.1" fill="currentColor"/>
+      <path d="M10.5 13.5v4.5M10.5 9.5v2.5c0 .8 1 1.5 2 1.5h0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </a>
+
+  <!-- GitHub -->
+  <a href="https://github.com/murbackk" target="_blank" rel="noopener noreferrer" aria-label="GitHub - Zênite" class="social-btn">
+    <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" focusable="false">
+      <path d="M12 .5C5.7.5.9 5.3.9 11.6c0 4.6 3 8.4 7.2 9.8.5.1.7-.2.7-.5v-1.7c-2.9.6-3.5-1.3-3.5-1.3-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.4 1.1 3 .9.1-.7.4-1.1.8-1.3-2.3-.3-4.7-1.2-4.7-5.3 0-1.2.4-2.1 1.1-2.9-.1-.3-.5-1.5.1-3.1 0 0 .9-.3 3 .9.8-.2 1.7-.3 2.6-.3.9 0 1.8.1 2.6.3 2.1-1.2 3-.9 3-.9.6 1.6.2 2.8.1 3.1.7.8 1.1 1.7 1.1 2.9 0 4.1-2.4 5-4.7 5.3.4.4.7 1 .7 2v3c0 .3.2.6.7.5 4.2-1.4 7.2-5.2 7.2-9.8C23.1 5.3 18.3.5 12 .5z" fill="currentColor"/>
+    </svg>
+  </a>
+
+  <!-- WhatsApp (opcional) -->
+  <a href="https://wa.me/5544984537708" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp - Zênite" class="social-btn">
+    <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" focusable="false">
+      <path d="M21 12a9 9 0 1 0-2.5 6.3L22 22l-3.7-1.5A8.9 8.9 0 0 0 21 12z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M17.5 14.2c-.3-.1-1.8-.9-2-.9s-.3 0-.5.1c-.2.1-.5.2-.8.5-.3.3-.5.3-.9.1s-1.2-.4-2.3-1.4c-.9-.8-1.6-1.8-1.8-2.1s-.1-.4.1-.6c.1-.1.3-.3.4-.5.1-.2.1-.3.2-.4.1-.1.1-.2 0-.4-.1-.1-.5-1.2-.7-1.6-.2-.4-.4-.3-.5-.3-.1 0-.3 0-.5 0-.2 0-.5.1-.8.3-.7.4-1 1.1-1 2.1 0 1.1.6 2.2 1.5 3.1 1 1 2.2 1.7 3.8 2.3 1.6.6 2.1.6 2.8.5.4-.1 1.4-.6 1.6-.9.2-.3.2-.6.1-.7-.1-.1-.4-.2-.7-.3z" fill="currentColor"/>
+    </svg>
+  </a>
+</div>
+
+<!-- CSS — coloque no seu <style> ou no geral.css -->
+<style>
+  .socials {
+    margin: 18px auto 6px;
+    display: inline-flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .social-btn {
+    display: inline-flex;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: transform .14s ease, box-shadow .14s ease;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 6px;
+  }
+
+  /* usa a cor atual dos textos do seu tema */
+  .social-btn svg { color: var(--color-text-light, #4c035c); }
+
+  .social-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  }
+
+  /* versão para focos de acessibilidade */
+  .social-btn:focus {
+    outline: 3px solid rgba(255,255,255,0.12);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 600px) {
+    .socials { gap: 10px; }
+    .social-btn { width: 40px; height: 40px; }
+  }
+</style>
+
+
+        </div>
+
+    </div>
+
+</body>
+</html>
