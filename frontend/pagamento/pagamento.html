@@ -104,11 +104,12 @@
         // Carregar dados do pedido
         async function carregarPedido() {
             try {
-                const response = await fetch(`${API_URL}/pedidos/${pedidoId}`);
+                const response = await fetch(`${API_URL}/pedido/${pedidoId}`);
                 
                 if (response.ok) {
                     const pedido = await response.json();
-                    valorTotal = parseFloat(pedido.valortotal);
+                    console.log("DADOS DO PEDIDO CARREGADO:", pedido);
+                    valorTotal = parseFloat(pedido.pedido.valortotal);
                     document.getElementById('valor-total').textContent = valorTotal.toFixed(2);
                 } else {
                     mostrarMensagem('Erro ao carregar dados do pedido.', 'error');

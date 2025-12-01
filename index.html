@@ -303,9 +303,10 @@ const response = await fetch('http://localhost:3001/pedido', {  // <-- ROTA CORR
 
 
                 const result = await response.json();
+                console.log("RETORNO DO BACKEND:", result);
 
                 if (response.ok) {
-                   localStorage.setItem('pedidoId', result.idpedido);
+                  localStorage.setItem('pedidoId', result.idPedido);
                     mostrarAlerta('Pedido registrado com sucesso!', 'success');
                     carrinho = [];
                     atualizarCarrinho();
