@@ -80,6 +80,8 @@ const pedidoRoutes = require('./routes/pedidoRoutes');
 const pagamentoRoutes = require('./routes/pagamentoRoutes');
 const clienteRoutes = require('./routes/clienteRoutes');
 const pagamento_has_formapagamentoRoutes = require('./routes/pagamento_has_formapagamentoRoutes');
+const relatoriosRoutes = require('./routes/relatoriosRoutes');
+
 
 
 
@@ -90,6 +92,7 @@ app.use('/menu', menuRoutes);
 app.use('/cargos', cargoRoutes);
 app.use('/categoria', categoriaRoutes);
 app.use('/formadepagamento', formadepagamentoRoutes);
+app.use('/api/relatorios', relatoriosRoutes);
 app.use('/funcionario', funcionariosRoutes);
 app.use('/pessoa', pessoaRoutes);
 app.use('/produto', produtoRoutes);

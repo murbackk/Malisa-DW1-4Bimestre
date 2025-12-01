@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos Mais Vendidos - Sistema AVAP</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="messages-container" class="position-fixed top-0 end-0 p-3" style="z-index: 11"></div>
+    
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p id="loadingMessage">Carregando...</p>
+    </div>
+    
+    <div class="container">
+        <header class="report-header">
+            <div class="header-content">
+                <div class="header-titles">
+                    <h1><i class="bi bi-box-seam"></i> Produtos Mais Vendidos</h1>
+                    <p class="report-subtitle">Análise de desempenho dos produtos</p>
+                </div>
+                
+                <div class="action-buttons">
+                    <div class="button-group">
+                        <button id="exportExcel" class="btn-action btn-excel">
+                            <i class="bi bi-file-earmark-excel"></i> Excel
+                        </button>
+                        <button id="exportPdf" class="btn-action btn-pdf">
+                            <i class="bi bi-file-pdf"></i> PDF
+                        </button>
+                        <button id="printReport" class="btn-action btn-print">
+                            <i class="bi bi-printer"></i> Imprimir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <section class="filters">
+            <div class="filter-group">
+                <label for="dataInicio"><i class="bi bi-calendar"></i> Data Inicial</label>
+                <input type="date" id="dataInicio" class="form-control">
+            </div>
+            
+            <div class="filter-group">
+                <label for="dataFim"><i class="bi bi-calendar"></i> Data Final</label>
+                <input type="date" id="dataFim" class="form-control">
+            </div>
+            
+            <div class="filter-group">
+                <label for="limite"><i class="bi bi-list-ol"></i> Limite</label>
+                <select id="limite" class="form-control">
+                    <option value="5">Top 5</option>
+                    <option value="10" selected>Top 10</option>
+                    <option value="20">Top 20</option>
+                    <option value="50">Top 50</option>
+                    <option value="100">Top 100</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label>&nbsp;</label>
+                <button id="filtrarBtn" class="btn-primary w-100">
+                    <i class="bi bi-funnel"></i> Aplicar Filtros
+                </button>
+            </div>
+        </section>
+        
+        <section class="summary-cards">
+            <div class="summary-card">
+                <div class="card-icon">
+                    <i class="bi bi-boxes"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Total de Produtos</h3>
+                    <p id="totalProdutos">0</p>
+                </div>
+            </div>
+            
+            <div class="summary-card">
+                <div class="card-icon">
+                    <i class="bi bi-cart-check"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Itens Vendidos</h3>
+                    <p id="totalItensVendidos">0</p>
+                </div>
+            </div>
+            
+            <div class="summary-card">
+                <div class="card-icon">
+                    <i class="bi bi-currency-dollar"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Faturamento Total</h3>
+                    <p id="faturamentoTotal">R$ 0,00</p>
+                </div>
+            </div>
+            
+            <div class="summary-card">
+                <div class="card-icon">
+                    <i class="bi bi-trophy"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Top Produto</h3>
+                    <p id="topProduto">-</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="chart-container">
+            <div class="chart-header">
+                <h2 class="chart-title">Top 10 Produtos</h2>
+            </div>
+            <canvas id="produtosChart"></canvas>
+        </section>
+        
+        <section class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Produto</th>
+                        <th>Categoria</th>
+                        <th class="text-center">Quantidade</th>
+                        <th class="text-end">Valor Total</th>
+                        <th class="text-end">Preço Médio</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaProdutosBody">
+                    <tr>
+                        <td colspan="6" class="text-center py-4">
+                            <div class="empty-state">
+                                <i class="bi bi-hourglass-split"></i>
+                                <p>Carregando dados...</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    
+    <script>
+        let produtosChart = null;
+        let dadosGlobais = [];
+        const API_BASE_URL = 'http://localhost:3001';
+        
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value || 0);
+        }
+        
+        function formatNumber(value) {
+            return new Intl.NumberFormat('pt-BR').format(value || 0);
+        }
+        
+        function showLoading(message = 'Carregando...') {
+            document.getElementById('loadingMessage').textContent = message;
+            document.getElementById('loadingOverlay').classList.add('active');
+        }
+        
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('active');
+        }
+        
+        function showMessage(message, type = 'info') {
+            const container = document.getElementById('messages-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message message-${type}`;
+            messageDiv.innerHTML = message;
+            container.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.style.opacity = '0';
+                setTimeout(() => messageDiv.remove(), 300);
+            }, 5000);
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const hoje = new Date();
+            const trintaDiasAtras = new Date();
+            trintaDiasAtras.setDate(hoje.getDate() - 30);
+            
+            document.getElementById('dataFim').value = hoje.toISOString().split('T')[0];
+            document.getElementById('dataInicio').value = trintaDiasAtras.toISOString().split('T')[0];
+            
+            document.getElementById('filtrarBtn').addEventListener('click', carregarDados);
+            document.getElementById('printReport').addEventListener('click', () => window.print());
+            document.getElementById('exportPdf').addEventListener('click', exportarParaPDF);
+            document.getElementById('exportExcel').addEventListener('click', exportarParaExcel);
+            
+            carregarDados();
+        });
+        
+        async function carregarDados() {
+            try {
+                showLoading('Buscando dados dos produtos...');
+                
+                const dataInicio = document.getElementById('dataInicio').value;
+                const dataFim = document.getElementById('dataFim').value;
+                const limite = document.getElementById('limite').value;
+                
+                const params = new URLSearchParams();
+                if (dataInicio) params.append('dataInicio', dataInicio);
+                if (dataFim) params.append('dataFim', dataFim);
+                params.append('limite', limite);
+                
+                const url = `${API_BASE_URL}/api/relatorios/produtos-mais-vendidos?${params.toString()}`;
+                console.log('🌐 Requisição:', url);
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Erro ${response.status}`);
+                }
+                
+                const result = await response.json();
+                console.log('✅ Dados:', result);
+                
+                if (result.status === 'success' && result.data) {
+                    dadosGlobais = result.data;
+                    atualizarInterface(result.data);
+                    showMessage('Dados carregados com sucesso!', 'success');
+                } else {
+                    throw new Error('Formato de resposta inválido');
+                }
+                
+            } catch (error) {
+                console.error('❌ Erro:', error);
+                showMessage('Erro: ' + error.message, 'error');
+                dadosGlobais = [];
+                atualizarInterface([]);
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        function atualizarInterface(dados) {
+            const totalItens = dados.reduce((acc, item) => acc + (parseInt(item.quantidade_vendida) || 0), 0);
+            const totalFaturamento = dados.reduce((acc, item) => acc + (parseFloat(item.valor_total_vendido) || 0), 0);
+            const topProduto = dados.length > 0 ? dados[0].nome : '-';
+            
+            document.getElementById('totalProdutos').textContent = dados.length;
+            document.getElementById('totalItensVendidos').textContent = formatNumber(totalItens);
+            document.getElementById('faturamentoTotal').textContent = formatCurrency(totalFaturamento);
+            document.getElementById('topProduto').textContent = topProduto.length > 20 ? topProduto.substring(0, 20) + '...' : topProduto;
+            
+            atualizarTabela(dados);
+            atualizarGrafico(dados);
+        }
+        
+        function atualizarTabela(dados) {
+            const tbody = document.getElementById('tabelaProdutosBody');
+            tbody.innerHTML = '';
+            
+            if (!dados || dados.length === 0) {
+                tbody.innerHTML = `
+                    <tr><td colspan="6" class="text-center py-4">
+                        <div class="empty-state">
+                            <i class="bi bi-inbox"></i>
+                            <p>Nenhum produto encontrado</p>
+                        </div>
+                    </td></tr>`;
+                return;
+            }
+            
+            dados.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="text-center">${index + 1}</td>
+                    <td>
+                        <div class="product-name">${item.nome || 'Sem nome'}</div>
+                        ${item.descricao ? `<div class="product-category">${item.descricao}</div>` : ''}
+                    </td>
+                    <td>${item.categoria || 'Sem categoria'}</td>
+                    <td class="text-center"><strong>${formatNumber(item.quantidade_vendida || 0)}</strong></td>
+                    <td class="text-end"><strong>${formatCurrency(item.valor_total_vendido || 0)}</strong></td>
+                    <td class="text-end">${formatCurrency(item.preco_medio_venda || 0)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+        
+        function atualizarGrafico(dados) {
+            const ctx = document.getElementById('produtosChart').getContext('2d');
+            
+            if (produtosChart) {
+                produtosChart.destroy();
+            }
+            
+            if (!dados || dados.length === 0) return;
+            
+            const dadosLimitados = dados.slice(0, 10);
+            const labels = dadosLimitados.map(item => {
+                const nome = item.nome || 'Sem nome';
+                return nome.length > 20 ? nome.substring(0, 20) + '...' : nome;
+            });
+            const valores = dadosLimitados.map(item => parseFloat(item.valor_total_vendido) || 0);
+            
+            produtosChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Valor Total (R$)',
+                        data: valores,
+                        backgroundColor: 'rgba(139, 111, 71, 0.7)',
+                        borderColor: 'rgba(139, 111, 71, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => formatCurrency(context.parsed.y)
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: (value) => 'R$ ' + value.toLocaleString('pt-BR')
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function exportarParaPDF() {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                doc.setFontSize(18);
+                doc.text('Relatorio de Produtos Mais Vendidos', 14, 15);
+                
+                doc.setFontSize(10);
+                doc.text(`Emitido em: ${new Date().toLocaleString('pt-BR')}`, 14, 25);
+                
+                const headers = [['#', 'Produto', 'Categoria', 'Qtd', 'Valor Total', 'Preco Medio']];
+                const rows = dadosGlobais.map((item, i) => [
+                    (i + 1).toString(),
+                    item.nome || 'Sem nome',
+                    item.categoria || 'Sem categoria',
+                    formatNumber(item.quantidade_vendida || 0),
+                    formatCurrency(item.valor_total_vendido || 0),
+                    formatCurrency(item.preco_medio_venda || 0)
+                ]);
+                
+                doc.autoTable({
+                    head: headers,
+                    body: rows,
+                    startY: 35,
+                    styles: { fontSize: 8 }
+                });
+                
+                doc.save(`produtos-${new Date().toISOString().split('T')[0]}.pdf`);
+                showMessage('PDF exportado com sucesso!', 'success');
+            } catch (error) {
+                console.error('Erro PDF:', error);
+                showMessage('Erro ao gerar PDF', 'error');
+            }
+        }
+        
+        function exportarParaExcel() {
+            try {
+                const wb = XLSX.utils.book_new();
+                const headers = ['#', 'Produto', 'Categoria', 'Quantidade', 'Valor Total', 'Preco Medio'];
+                const rows = dadosGlobais.map((item, i) => [
+                    i + 1,
+                    item.nome || 'Sem nome',
+                    item.categoria || 'Sem categoria',
+                    item.quantidade_vendida || 0,
+                    item.valor_total_vendido || 0,
+                    item.preco_medio_venda || 0
+                ]);
+                
+                const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+                XLSX.utils.book_append_sheet(wb, ws, 'Produtos');
+                XLSX.writeFile(wb, `produtos-${new Date().toISOString().split('T')[0]}.xlsx`);
+                showMessage('Excel exportado com sucesso!', 'success');
+            } catch (error) {
+                console.error('Erro Excel:', error);
+                showMessage('Erro ao gerar Excel', 'error');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Vendas Mensais - Sistema AVAP</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="messages-container" class="position-fixed top-0 end-0 p-3" style="z-index: 11"></div>
+    
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p id="loadingMessage">Carregando...</p>
+    </div>
+    
+    <div class="container">
+        <header class="report-header">
+            <div class="header-content">
+                <div class="header-titles">
+                    <h1><i class="bi bi-graph-up-arrow"></i> Vendas Mensais</h1>
+                    <p class="report-subtitle">Análise detalhada das vendas por mês</p>
+                </div>
+                
+                <div class="action-buttons">
+                    <div class="button-group">
+                        <button id="exportExcel" class="btn-action btn-excel">
+                            <i class="bi bi-file-earmark-excel"></i> Excel
+                        </button>
+                        <button id="exportPdf" class="btn-action btn-pdf">
+                            <i class="bi bi-file-pdf"></i> PDF
+                        </button>
+                        <button id="printReport" class="btn-action btn-print">
+                            <i class="bi bi-printer"></i> Imprimir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <section class="filters">
+            <div class="filter-group">
+                <label for="ano"><i class="bi bi-calendar"></i> Ano</label>
+                <select id="ano" class="form-control">
+                    <!-- Preenchido via JavaScript -->
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="ordenar"><i class="bi bi-sort-down"></i> Ordenar por</label>
+                <select id="ordenar" class="form-control">
+                    <option value="mes_numero">Mês</option>
+                    <option value="totalVendas">Valor Total</option>
+                    <option value="quantidadePedidos">Quantidade</option>
+                    <option value="ticketMedio">Ticket Médio</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="direcao"><i class="bi bi-arrow-down-up"></i> Direção</label>
+                <select id="direcao" class="form-control">
+                    <option value="asc">Crescente</option>
+                    <option value="desc">Decrescente</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label>&nbsp;</label>
+                <button id="filtrarBtn" class="btn-primary w-100">
+                    <i class="bi bi-funnel"></i> Aplicar Filtros
+                </button>
+            </div>
+        </section>
+        
+        <section class="summary-cards">
+            <div class="summary-card">
+                <div class="card-icon">
+                    <i class="bi bi-currency-dollar"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Total de Vendas</h3>
+                    <p id="totalVendas">R$ 0,00</p>
+                </div>
+            </div>
+            
+            <div class="summary-card">
+                <div class="card-icon">
+                    <i class="bi bi-cart-check"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Total de Pedidos</h3>
+                    <p id="totalPedidos">0</p>
+                </div>
+            </div>
+            
+            <div class="summary-card">
+                <div class="card-icon">
+                    <i class="bi bi-receipt"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Ticket Médio</h3>
+                    <p id="ticketMedio">R$ 0,00</p>
+                </div>
+            </div>
+            
+            <div class="summary-card">
+                <div class="card-icon">
+                    <i class="bi bi-trophy"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Melhor Mês</h3>
+                    <p id="melhorMes">-</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="chart-container">
+            <div class="chart-header">
+                <h2 class="chart-title">Vendas por Mês</h2>
+            </div>
+            <canvas id="salesChart"></canvas>
+        </section>
+        
+        <section class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Mês</th>
+                        <th class="text-end">Vendas Realizadas</th>
+                        <th class="text-end">Valor Total</th>
+                        <th class="text-end">Ticket Médio</th>
+                        <th class="text-end">Crescimento</th>
+                    </tr>
+                </thead>
+                <tbody id="salesTableBody">
+                    <tr>
+                        <td colspan="5" class="text-center py-4">
+                            <div class="empty-state">
+                                <i class="bi bi-hourglass-split"></i>
+                                <p>Carregando dados...</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    
+    <script>
+        let salesChart = null;
+        let salesData = [];
+        const API_BASE_URL = 'http://localhost:3001';
+        
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value || 0);
+        }
+        
+        function getMonthName(monthNumber) {
+            const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                          'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+            return months[monthNumber - 1] || '';
+        }
+        
+        function showLoading(message = 'Carregando...') {
+            document.getElementById('loadingMessage').textContent = message;
+            document.getElementById('loadingOverlay').classList.add('active');
+        }
+        
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('active');
+        }
+        
+        function showMessage(message, type = 'info') {
+            const container = document.getElementById('messages-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message message-${type}`;
+            messageDiv.innerHTML = message;
+            container.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.style.opacity = '0';
+                setTimeout(() => messageDiv.remove(), 300);
+            }, 5000);
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const yearSelect = document.getElementById('ano');
+            const currentYear = new Date().getFullYear();
+            
+            for (let year = currentYear - 5; year <= currentYear + 1; year++) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                if (year === currentYear) option.selected = true;
+                yearSelect.appendChild(option);
+            }
+            
+            document.getElementById('filtrarBtn').addEventListener('click', loadSalesData);
+            document.getElementById('printReport').addEventListener('click', () => window.print());
+            document.getElementById('exportPdf').addEventListener('click', exportToPDF);
+            document.getElementById('exportExcel').addEventListener('click', exportToExcel);
+            
+            loadSalesData();
+        });
+        
+        async function loadSalesData() {
+            try {
+                showLoading('Buscando dados...');
+                
+                const ano = document.getElementById('ano').value;
+                const ordenar = document.getElementById('ordenar').value;
+                const direcao = document.getElementById('direcao').value;
+                
+                const url = `${API_BASE_URL}/api/relatorios/vendas-mensais?ano=${ano}&ordenar=${ordenar}&direcao=${direcao}`;
+                console.log('🌐 Requisição:', url);
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Erro ${response.status}`);
+                }
+                
+                const result = await response.json();
+                console.log('✅ Dados:', result);
+                
+                if (result.status === 'success' && result.data) {
+                    salesData = result.data;
+                    updateUI();
+                    showMessage('Dados carregados com sucesso!', 'success');
+                } else {
+                    throw new Error('Formato de resposta inválido');
+                }
+                
+            } catch (error) {
+                console.error('❌ Erro:', error);
+                showMessage('Erro: ' + error.message, 'error');
+                salesData = [];
+                updateUI();
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        function updateUI() {
+            updateSummaryCards();
+            updateChart();
+            updateTable();
+        }
+        
+       function updateSummaryCards() {
+    if (!salesData || salesData.length === 0) {
+        document.getElementById('totalVendas').textContent = 'R$ 0,00';
+        document.getElementById('totalPedidos').textContent = '0';
+        document.getElementById('ticketMedio').textContent = 'R$ 0,00';
+        document.getElementById('melhorMes').textContent = '-';
+        return;
+    }
+
+    // 🔥 Converte tudo para número corretamente
+    const parsedData = salesData.map(m => ({
+        mes_numero: Number(m.mes_numero),
+        quantidadePedidos: Number(m.quantidadePedidos),
+        totalVendas: Number(m.totalVendas),
+        ticketMedio: Number(m.ticketMedio)
+    }));
+
+    const totalVendas = parsedData.reduce((sum, m) => sum + m.totalVendas, 0);
+    const totalPedidos = parsedData.reduce((sum, m) => sum + m.quantidadePedidos, 0);
+    const ticketMedio = totalPedidos > 0 ? totalVendas / totalPedidos : 0;
+
+    const melhorMes = [...parsedData].sort((a, b) => b.totalVendas - a.totalVendas)[0];
+
+    document.getElementById('totalVendas').textContent = formatCurrency(totalVendas);
+    document.getElementById('totalPedidos').textContent = totalPedidos;
+    document.getElementById('ticketMedio').textContent = formatCurrency(ticketMedio);
+    document.getElementById('melhorMes').textContent = melhorMes ? getMonthName(melhorMes.mes_numero) : '-';
+
+    // 👉 Atualiza os dados parseados no lugar dos originais
+    salesData = parsedData;
+}
+
+        
+        function updateChart() {
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            
+            if (salesChart) {
+                salesChart.destroy();
+            }
+            
+            if (!salesData || salesData.length === 0) return;
+            
+            const sortedData = [...salesData].sort((a, b) => a.mes_numero - b.mes_numero);
+            const labels = sortedData.map(m => getMonthName(m.mes_numero));
+            const valores = sortedData.map(m => m.totalVendas);
+            
+            salesChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Valor Total (R$)',
+                        data: valores,
+                        backgroundColor: 'rgba(139, 111, 71, 0.7)',
+                        borderColor: 'rgba(139, 111, 71, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => formatCurrency(context.parsed.y)
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: (value) => 'R$ ' + value.toLocaleString('pt-BR')
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function updateTable() {
+            const tbody = document.getElementById('salesTableBody');
+            
+            if (!salesData || salesData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4"><div class="empty-state"><i class="bi bi-inbox"></i><p>Nenhum dado disponível</p></div></td></tr>';
+                return;
+            }
+            
+            let html = '';
+            salesData.forEach((mes, index) => {
+                const variacao = index > 0 && salesData[index - 1].totalVendas > 0 ?
+                    ((mes.totalVendas - salesData[index - 1].totalVendas) / salesData[index - 1].totalVendas * 100) : 0;
+                
+                html += `
+                    <tr>
+                        <td><strong>${getMonthName(mes.mes_numero)}</strong></td>
+                        <td class="text-end">${mes.quantidadePedidos}</td>
+                        <td class="text-end"><strong>${formatCurrency(mes.totalVendas)}</strong></td>
+                        <td class="text-end">${formatCurrency(mes.ticketMedio)}</td>
+                        <td class="text-end ${variacao >= 0 ? 'text-success' : 'text-danger'}">
+                            ${index > 0 ? `${variacao >= 0 ? '+' : ''}${variacao.toFixed(1)}%` : '-'}
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+        }
+        
+        function exportToPDF() {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                doc.setFontSize(18);
+                doc.text('Relatorio de Vendas Mensais', 14, 15);
+                
+                doc.setFontSize(10);
+                doc.text(`Emitido em: ${new Date().toLocaleString('pt-BR')}`, 14, 25);
+                
+                const sortedData = [...salesData].sort((a, b) => a.mes_numero - b.mes_numero);
+                const headers = [['Mes', 'Pedidos', 'Valor Total', 'Ticket Medio']];
+                const rows = sortedData.map(m => [
+                    getMonthName(m.mes_numero),
+                    m.quantidadePedidos.toString(),
+                    formatCurrency(m.totalVendas),
+                    formatCurrency(m.ticketMedio)
+                ]);
+                
+                doc.autoTable({
+                    head: headers,
+                    body: rows,
+                    startY: 35,
+                    styles: { fontSize: 8 }
+                });
+                
+                doc.save(`vendas-mensais-${new Date().toISOString().split('T')[0]}.pdf`);
+                showMessage('PDF exportado com sucesso!', 'success');
+            } catch (error) {
+                console.error('Erro PDF:', error);
+                showMessage('Erro ao gerar PDF', 'error');
+            }
+        }
+        
+        function exportToExcel() {
+            try {
+                const sortedData = [...salesData].sort((a, b) => a.mes_numero - b.mes_numero);
+                const wb = XLSX.utils.book_new();
+                const headers = ['Mes', 'Quantidade Pedidos', 'Valor Total', 'Ticket Medio'];
+                const rows = sortedData.map(m => [
+                    getMonthName(m.mes_numero),
+                    m.quantidadePedidos,
+                    m.totalVendas,
+                    m.ticketMedio
+                ]);
+                
+                const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+                XLSX.utils.book_append_sheet(wb, ws, 'Vendas Mensais');
+                XLSX.writeFile(wb, `vendas-mensais-${new Date().toISOString().split('T')[0]}.xlsx`);
+                showMessage('Excel exportado com sucesso!', 'success');
+            } catch (error) {
+                console.error('Erro Excel:', error);
+                showMessage('Erro ao gerar Excel', 'error');
+            }
+        }
+    </script>
+</body>
+</html>

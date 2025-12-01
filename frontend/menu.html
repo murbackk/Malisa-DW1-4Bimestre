@@ -41,13 +41,16 @@
         <div class="menu-content">
             
             <h1>Dashboard do Gerente</h1>
-            <p>Bem-vindo, <span id="nomeGerente">Gerente</span>!</p>
+             <p>Bem-vindo(a), chefe supremo, <span id="nomeGerente"></span>!</p>
             
           
             
             <div class="menu-actions">
                 <button onclick="homepage()">Homepage</button>
                 <button onclick="logout()">Sair</button>
+                <button onclick="window.location.href='relatorios/vendas-mensais.html'">Vendas Mensais</button>
+                <button onclick="window.location.href='relatorios/produtos-mais-vendidos.html'">Produtos mais vendidos</button>
+
             </div>
         </div>
     </div>
@@ -84,6 +87,18 @@
             alert('Logout realizado com sucesso!');
             window.location.href = '../../index.html';
         }
+
+        // ==================== MOSTRAR NOME DO GERENTE ====================
+    document.addEventListener("DOMContentLoaded", () => {
+        const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
+        const nomeSpan = document.getElementById("nomeGerente");
+
+        if (usuarioLogado && usuarioLogado.nomeUsuario) {
+            nomeSpan.textContent = usuarioLogado.nomeUsuario;
+        } else {
+            nomeSpan.textContent = "Gerente";
+        }
+    });
     </script>
 </body>
 </html>

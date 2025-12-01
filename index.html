@@ -22,6 +22,7 @@
         <div class="logo">Zenite Store</div></div>
         <div class="user-section">
             <div id="welcomeSection" style="display: none;">
+                   <span id="nomeUsuario" style=margin-right: 10px;"></span>
                 <button id="gerenciarBtn" class="btn btn-secondary" onclick="goToGerenciar()" style="display: none;">Gerenciar</button>
                 <button class="btn btn-danger" onclick="logout()">Sair</button>
             </div>
@@ -79,23 +80,32 @@
         });
 
         // Verifica se usuário está logado
-        function verificarLogin() {
-            const user = localStorage.getItem('usuarioLogado');
-            if (user) {
-                usuarioLogado = JSON.parse(user);
-                document.getElementById('loginSection').style.display = 'none';
-                document.getElementById('welcomeSection').style.display = 'flex';
-                document.getElementById('loginbody').style.display = 'none';
-            
+       function verificarLogin() {
+    const user = localStorage.getItem('usuarioLogado');
+    const nomeSpan = document.getElementById('nomeUsuario');
 
+    if (user) {
+        usuarioLogado = JSON.parse(user);
+        document.getElementById('loginSection').style.display = 'none';
+        document.getElementById('welcomeSection').style.display = 'flex';
+        document.getElementById('loginbody').style.display = 'none';
 
-                // Verificar se é gerente
-                verificarGerente(usuarioLogado.idUsuario);
-            } else {
-                document.getElementById('loginSection').style.display = 'block';
-                document.getElementById('welcomeSection').style.display = 'none';
-            }
+        // Mostra o nome do usuário
+        if (usuarioLogado.nomeUsuario) {
+            nomeSpan.textContent = `Bem-vindo(a), ${usuarioLogado.nomeUsuario}!`;
+        } else {
+            nomeSpan.textContent = 'Bem-vindo(a)!';
         }
+
+        // Verificar se é gerente
+        verificarGerente(usuarioLogado.idUsuario);
+    } else {
+        document.getElementById('loginSection').style.display = 'block';
+        document.getElementById('welcomeSection').style.display = 'none';
+        nomeSpan.textContent = '';
+    }
+}
+
 
         // Verificar se o usuário é gerente
         async function verificarGerente(idUsuario) {
