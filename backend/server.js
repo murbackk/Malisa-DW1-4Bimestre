@@ -84,6 +84,7 @@ const pagamento_has_formapagamentoRoutes = require('./routes/pagamento_has_forma
 
 
 
+
 app.use('/login', loginRoutes);
 app.use('/menu', menuRoutes);
 app.use('/cargos', cargoRoutes);
@@ -92,6 +93,7 @@ app.use('/formadepagamento', formadepagamentoRoutes);
 app.use('/funcionario', funcionariosRoutes);
 app.use('/pessoa', pessoaRoutes);
 app.use('/produto', produtoRoutes);
+app.use("/imgs", express.static(path.join(__dirname, "../frontend/imgs")));
 app.use('/cliente', clienteRoutes);
 app.use('/pedido', pedidoRoutes);
 app.use('/pagamento', pagamentoRoutes);

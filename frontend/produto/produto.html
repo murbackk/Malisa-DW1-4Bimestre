@@ -421,7 +421,14 @@
                         <td>R$ ${parseFloat(produto.precounitario).toFixed(2)}</td>
                         <td>${produto.descricao || '-'}</td>
                         <td>${produto.nomecategoria || '-'}</td>
-                        <td>${produto.possuiimagem ? '✓' : '-'}</td>
+                        <td>
+    ${
+        produto.imagem 
+        ? `<img src="http://localhost:3001/${produto.imagem}" style="width:60px;height:60px;object-fit:cover;border-radius:6px;">`
+        : "-"
+    }
+</td>
+
                     `;
                     
                     row.addEventListener('click', function() {
@@ -430,9 +437,13 @@
                         mostrarBotoesEdicao();
                         mostrarMensagem('Produto selecionado da tabela.', 'info');
                         
-                        if (produto.possuiimagem) {
-                            carregarImagemProduto(produto.idproduto);
-                        }
+                        if (produto.imagem) {
+    imagemPreview.innerHTML = `
+        <img src="http://localhost:3001/${produto.imagem}" 
+             style="max-width:200px; margin-top:10px;">
+    `;
+}
+
                     });
                     
                     produtosTableBody.appendChild(row);

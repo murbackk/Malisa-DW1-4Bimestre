@@ -1,0 +1,400 @@
+/* ==========================================================================
+   Variáveis de Cor e Configurações Globais (Baseado na Imagem)
+   ========================================================================== */
+
+:root {
+    /* Cores da Imagem */
+    --color-background-dark: #1A053A; /* Roxo bem escuro do fundo */
+    --color-container-bg: #210B45; /* Roxo um pouco mais claro do container principal */
+    --color-column-left: #210B45; /* Cor da coluna de seleção */
+    --color-column-right: #3A1C6A; /* Cor da coluna de detalhes (um roxo mais vibrante) */
+    --color-text-light: #FFFFFF;
+    --color-text-faded: rgba(255, 255, 255, 0.7);
+    --color-accent-pink: #E83E8C; /* Rosa vibrante dos botões */
+    --color-accent-blue: #00BFFF; /* Azul para detalhes (não muito usado na imagem, mas bom ter) */
+
+    /* Tipografia */
+    --font-family-main: 'Inter', sans-serif;
+    --font-size-base: 16px;
+
+    /* Espaçamento */
+    --spacing-small: 8px;
+    --spacing-medium: 16px;
+    --spacing-large: 24px;
+    --spacing-xlarge: 48px;
+
+    /* Sombras */
+    --shadow-main: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================================================
+   Estilos Globais e Estrutura
+   ========================================================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family-main);
+    font-size: var(--font-size-base);
+    line-height: 1.5;
+    color: var(--color-text-light);
+    background-color: var(--color-background-dark);
+    /* Fundo gradiente sutil */
+    background-image: radial-gradient(circle at 50% 50%, rgba(58, 28, 106, 0.5) 0%, rgba(26, 5, 58, 1) 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Container principal que simula a janela */
+#payment-page-container {
+    width: 100%;
+    max-width: 1000px;
+    height: 650px; /* Altura fixa para simular a janela da imagem */
+    background-color: var(--color-container-bg);
+    border-radius: 16px;
+    box-shadow: var(--shadow-main);
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   Conteúdo Principal (Duas Colunas)
+   ========================================================================== */
+
+#payment-content {
+    display: flex;
+    height: 100%;
+}
+
+/* Coluna Esquerda: Seleção de Pagamento */
+#payment-selection-column {
+    width: 40%;
+    padding: var(--spacing-xlarge);
+    background-color: var(--color-column-left);
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#logo-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-faded);
+    margin-bottom: var(--spacing-xlarge);
+}
+
+#logo-header img {
+    height: 16px;
+}
+
+#payment-selection-column h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-medium); /* Reduzir margem para encaixar o link */
+}
+
+#user-info p {
+    font-size: 1rem;
+    margin-bottom: var(--spacing-small);
+    color: var(--color-text-faded);
+}
+
+#user-info span {
+    font-weight: 600;
+    color: var(--color-text-light);
+}
+
+#total-value {
+    margin-top: var(--spacing-xlarge);
+    margin-bottom: var(--spacing-large);
+}
+
+#total-value h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-text-light);
+    margin-bottom: var(--spacing-small);
+}
+
+#total-value p {
+    font-size: 1rem;
+    color: var(--color-text-faded);
+}
+
+/* Botões de Forma de Pagamento */
+#formas-pagamento-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-medium);
+    margin-top: var(--spacing-large);
+}
+
+.payment-method-btn {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 30px; /* Borda arredondada como na imagem */
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background-color 0.3s, opacity 0.3s;
+    background-color: var(--color-accent-pink);
+    color: var(--color-text-light);
+    font-size: 1rem;
+}
+
+.payment-method-btn:hover {
+    opacity: 0.9;
+}
+
+/* Link Voltar para a Loja */
+#back-to-store {
+    color: var(--color-text-faded);
+    text-decoration: none;
+    font-size: 0.9rem;
+    align-self: flex-start;
+    transition: color 0.3s;
+    margin-bottom: var(--spacing-large); /* Adicionar margem abaixo do link */
+}
+
+#back-to-store:hover {
+    color: var(--color-text-light);
+}
+
+/* Coluna Direita: Detalhes do Pagamento */
+#payment-details-column {
+    width: 60%;
+    padding: var(--spacing-xlarge);
+    background-color: var(--color-column-right);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* Conteúdo PIX/Cartão */
+#pix-section, #cartao-section {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+#pix-placeholder {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-bottom: var(--spacing-large);
+    text-align: center; /* Garantir centralização */
+}
+
+#qrcode {
+    margin: var(--spacing-medium) auto;
+    padding: var(--spacing-small);
+    background-color: var(--color-text-light);
+    display: inline-block;
+    border-radius: 8px;
+}
+
+/* Formulário de Cartão */
+#form-cartao {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-medium);
+    max-width: 400px;
+    width: 100%;
+    text-align: left;
+}
+
+#form-cartao label {
+    display: block;
+    margin-bottom: var(--spacing-small);
+    font-size: 0.9rem;
+    color: var(--color-text-faded);
+}
+
+#form-cartao input {
+    width: 100%;
+    padding: 14px 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: var(--color-text-light);
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+#form-cartao input::placeholder {
+    color: var(--color-text-faded);
+}
+
+#form-cartao input:focus {
+    border-color: var(--color-accent-pink);
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.split-input {
+    display: flex;
+    gap: var(--spacing-medium);
+}
+
+.split-input > div {
+    flex: 1;
+}
+
+#btn-validar-cartao {
+     width: 80%;
+    max-width: 300px;
+    padding: 16px;
+    border: none;
+    border-radius: 30px;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: opacity 0.3s;
+    background-color: var(--color-accent-pink);
+    color: var(--color-text-light);
+    font-size: 1rem;
+    margin-top: auto; /* Empurra para o final da coluna */
+    align-self: center; /* Centralizar o botão na coluna direita */
+}
+
+#cartao-status {
+    margin-top: var(--spacing-medium);
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Botão de Confirmação Principal (Pagamento Realizado) */
+#btn-confirmar-pagamento {
+    width: 80%;
+    max-width: 300px;
+    padding: 16px;
+    border: none;
+    border-radius: 30px;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: opacity 0.3s;
+    background-color: var(--color-accent-pink);
+    color: var(--color-text-light);
+    font-size: 1rem;
+    margin-top: auto; /* Empurra para o final da coluna */
+    align-self: center; /* Centralizar o botão na coluna direita */
+}
+
+#btn-confirmar-pagamento:hover {
+    opacity: 0.9;
+}
+
+/* Mensagens de Notificação (messageContainer) */
+#messageContainer {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+#messageContainer div {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    color: white;
+    font-weight: 600;
+    min-width: 250px;
+    box-shadow: var(--shadow-main);
+}
+
+/* Responsividade */
+@media (max-width: 900px) {
+    #payment-page-container {
+        max-width: 100%;
+        height: auto;
+        min-height: 100vh;
+        border-radius: 0;
+    }
+    body {
+        padding: 0;
+    }
+    #payment-content {
+        flex-direction: column;
+    }
+    #payment-selection-column, #payment-details-column {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    #payment-selection-column {
+        padding: var(--spacing-large); /* Reduzir o padding para celular */
+        padding-bottom: var(--spacing-large);
+    }
+    #payment-details-column {
+        min-height: 400px;
+        padding: var(--spacing-large); /* Reduzir o padding para celular */
+    }
+    
+    /* Garante que o conteúdo da coluna direita (PIX/Cartão) fique centralizado no modo mobile */
+    #pix-section, #cartao-section {
+        justify-content: flex-start; /* Alinha o conteúdo ao topo no modo mobile */
+        padding-top: var(--spacing-large);
+    }
+    
+    #btn-confirmar-pagamento {
+        margin-top: var(--spacing-xlarge);
+        margin-bottom: var(--spacing-large);
+        align-self: center;
+    }
+    
+    /* Ajustes finos para telas muito pequenas */
+    #payment-selection-column h1 {
+        font-size: 1.5rem;
+    }
+    #total-value h2 {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Ajustar ainda mais o espaçamento em telas muito pequenas */
+    #payment-selection-column, #payment-details-column {
+        padding: var(--spacing-medium);
+    }
+    
+    #logo-header {
+        margin-bottom: var(--spacing-large);
+    }
+    
+    #payment-selection-column h1 {
+        font-size: 1.4rem;
+    }
+    
+    #total-value h2 {
+        font-size: 1.6rem;
+    }
+    
+    #pix-placeholder {
+        font-size: 1rem; /* Reduzir o tamanho da fonte para caber melhor */
+    }
+    
+    #qrcode {
+        width: 200px; /* Limitar o tamanho do QR Code em telas pequenas */
+        height: 200px;
+    }
+    
+    #form-cartao {
+        max-width: 100%;
+    }
+}

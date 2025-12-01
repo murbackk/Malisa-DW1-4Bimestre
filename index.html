@@ -151,19 +151,26 @@ async function carregarProdutos() {
             produtos.forEach(produto => {
                 const card = document.createElement('div');
                 card.className = 'produto-card';
-                card.innerHTML = `
-                    <div class="produto-imagem">
-                        ${produto.imagem ? `<img src="${produto.imagem}" alt="${produto.nomeproduto}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">` : '📦 Sem imagem'}
-                    </div>
-                    <h3 class="produto-nome">${produto.nomeproduto}</h3>
-                    <p class="produto-preco">R$ ${parseFloat(produto.precounitario).toFixed(2)}</p>
-                    <div class="produto-actions">
-                        <input type="number" class="quantidade-input" value="1" min="1" id="qtd-${produto.idproduto}">
-                        <button class="btn-add-cart" onclick="adicionarAoCarrinho(${produto.idproduto})">
-                            Adicionar
-                        </button>
-                    </div>
-                `;
+               card.innerHTML = `
+    <div class="produto-imagem">
+        ${
+            produto.imagem 
+            ? `<img src="http://localhost:3001/${produto.imagem}" 
+                   alt="${produto.nomeproduto}"
+                   style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`
+            : "📦 Sem imagem"
+        }
+    </div>
+    <h3 class="produto-nome">${produto.nomeproduto}</h3>
+    <p class="produto-preco">R$ ${parseFloat(produto.precounitario).toFixed(2)}</p>
+    <div class="produto-actions">
+        <input type="number" class="quantidade-input" value="1" min="1" id="qtd-${produto.idproduto}">
+        <button class="btn-add-cart" onclick="adicionarAoCarrinho(${produto.idproduto})">
+            Adicionar
+        </button>
+    </div>
+`;
+
                 container.appendChild(card);
             });
         }

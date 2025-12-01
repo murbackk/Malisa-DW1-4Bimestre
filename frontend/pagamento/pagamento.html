@@ -5,77 +5,92 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pagamento - Zênite Store</title>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
-     <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="/backend/uploads/zenite_store_logo_star.png" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 
 </head>
 <body>
-    <header>
-        <div>
-            <h1>Finalizar Pagamento</h1>
-        </div>
-        <a href="../../index.html">← Voltar para a loja</a>
-    </header>
-
-    <main>
-        <div id="user-welcome">
-            <p>Bem-vindo(a), <span id="welcome-user-name"></span>!</p>
-            <p>Pedido #<span id="pedido-id"></span></p>
-        </div>
-
-        <section>
-            <h2>Valor Total: R$ <span id="valor-total">0.00</span></h2>
-        </section>
-
-        <section id="selecao-pagamento">
-            <h3>Selecione a Forma de Pagamento:</h3>
-            <div id="formas-pagamento-container">
-                <!-- Formas de pagamento carregadas dinamicamente -->
+    <div id="payment-page-container">
+        <main id="payment-content">
+            <!-- Coluna Esquerda: Seleção de Pagamento -->
+            <div id="payment-selection-column">
+                <div id="logo-header">
+                    <img src="/backend/uploads/zenite_store_logo_star.png" alt="Zenite Store Logo">
+                    <span>ZENITE STORE</span>
+                </div>
+                
+                <h1>Finalizar Pagamento</h1>
+                
+                <a href="../../index.html" id="back-to-store">← Voltar para a loja</a>
+                
+                <div id="user-info">
+                    <p>Bem-vindo(a), <span id="welcome-user-name"></span>!</p>
+                    <p>Pedido #<span id="pedido-id"></span></p>
+                </div>
+                
+                <div id="total-value">
+                    <h2>Valor Total: R$ <span id="valor-total">0.00</span></h2>
+                    <p>Selecione a forma de pagamento</p>
+                </div>
+                
+                <!-- O JS irá renderizar os botões PIX e CARTÃO aqui -->
+                <div id="formas-pagamento-container">
+                    <!-- Botões de forma de pagamento -->
+                </div>
             </div>
-        </section>
 
-        <section id="pix-section" style="display: none;">
-            <h3>Pagamento via PIX</h3>
-            <div id="qrcode" style="text-align: center; margin: 20px 0;"></div>
-            <p style="text-align: center;">Escaneie o QR Code acima com seu aplicativo de banco</p>
-            <button onclick="confirmarPagamento()">Pagamento Realizado</button>
-        </section>
-
-        <section id="cartao-section" style="display: none;">
-            <h3>Pagamento com Cartão</h3>
-            <form id="form-cartao">
-                <div>
-                    <label for="nome-cartao">Nome Completo (como está no cartão):</label>
-                    <input type="text" id="nome-cartao" placeholder="Digite seu nome completo" required>
+            <!-- Coluna Direita: Detalhes do Pagamento (QR Code ou Formulário) -->
+            <div id="payment-details-column">
+                
+                <!-- Conteúdo do PIX -->
+                <div id="pix-section" style="display: none;">
+                    <h3 class="payment-method-title">Pagamento via PIX</h3>
+                    <div id="qrcode"></div>
+                   
                 </div>
 
-                <div>
-                    <label for="numero-cartao">Número do Cartão:</label>
-                    <input type="text" id="numero-cartao" placeholder="0000 0000 0000 0000" maxlength="19" required>
+                <!-- Conteúdo do Cartão -->
+                <div id="cartao-section" style="display: none;">
+                    <h3 class="payment-method-title">Pagamento com Cartão</h3>
+                    <form id="form-cartao">
+                        <div>
+                            <label for="nome-cartao">Nome Completo (como está no cartão):</label>
+                            <input type="text" id="nome-cartao" placeholder="Digite seu nome completo" required>
+                        </div>
+
+                        <div>
+                            <label for="numero-cartao">Número do Cartão:</label>
+                            <input type="text" id="numero-cartao" placeholder="0000 0000 0000 0000" maxlength="19" required>
+                        </div>
+
+                        <div class="split-input">
+                            <div>
+                                <label for="validade-cartao">Validade:</label>
+                                <input type="text" id="validade-cartao" placeholder="MM/AA" maxlength="5" required>
+                            </div>
+                            <div>
+                                <label for="cvv-cartao">CVV:</label>
+                                <input type="text" id="cvv-cartao" placeholder="123" maxlength="3" required>
+                            </div>
+                        </div>
+                        
+                        <button type="button" onclick="validarCartao()" id="btn-validar-cartao">Validar Cartão</button>
+                        <p id="cartao-status"></p>
+                    </form>
                 </div>
-
-                <div>
-                    <label for="validade-cartao">Validade:</label>
-                    <input type="text" id="validade-cartao" placeholder="MM/AA" maxlength="5" required>
-                </div>
-
-                <div>
-                    <label for="cvv-cartao">CVV:</label>
-                    <input type="text" id="cvv-cartao" placeholder="123" maxlength="3" required>
-                </div>
-
-                <button type="button" onclick="validarCartao()">Validar Cartão</button>
-                <p id="cartao-status"></p>
-            </form>
-
-            <button id="btn-confirmar-cartao" style="display: none;" onclick="confirmarPagamento()">
-                Confirmar Pagamento
-            </button>
-        </section>
-    </main>
+                
+                <!-- Botão de Confirmação Principal -->
+                <button id="btn-confirmar-pagamento" style="display: none;" onclick="confirmarPagamento()">
+                    Pagamento Realizado
+                </button>
+            </div>
+        </main>
 
     <div id="messageContainer"></div>
+    </div>
 
     <script>
         const API_URL = 'http://localhost:3001';
@@ -146,17 +161,13 @@
                 return;
             }
 
+            // Limpa o container e cria os botões com a nova estrutura
+            container.innerHTML = '';
             formas.forEach(forma => {
                 const btn = document.createElement('button');
-                btn.textContent = forma.nomeformadepagamento;
-                btn.style.margin = '10px';
-                btn.style.padding = '15px 30px';
-                btn.style.fontSize = '16px';
-                btn.style.cursor = 'pointer';
-                btn.style.borderRadius = '5px';
-                btn.style.border = '2px solid #3b82f6';
-                btn.style.backgroundColor = 'white';
-                btn.style.color = '#3b82f6';
+                btn.textContent = forma.nomeformapagamento.toUpperCase();
+                btn.className = 'payment-method-btn';
+                btn.setAttribute('data-forma-id', forma.idformapagamento);
                 
                 btn.onclick = () => selecionarFormaPagamento(forma);
                 container.appendChild(btn);
@@ -167,33 +178,43 @@
         function selecionarFormaPagamento(forma) {
             formaPagamentoSelecionada = forma;
             
-            // Esconder seleção
-            document.getElementById('selecao-pagamento').style.display = 'none';
+            // Remove a classe 'selected' de todos os botões
+            document.querySelectorAll('.payment-method-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
             
-            // Mostrar seção apropriada
-            const nomeLower = forma.nomeformadepagamento.toLowerCase();
+            // Adiciona a classe 'selected' ao botão clicado
+            document.querySelector(`[data-forma-id="${forma.idformapagamento}"]`).classList.add('selected');
+
+            // Esconde todas as seções de detalhe e o botão de confirmação
+            document.getElementById('pix-section').style.display = 'none';
+            document.getElementById('cartao-section').style.display = 'none';
+            document.getElementById('btn-confirmar-pagamento').style.display = 'none';
+            
+            // Mostra a seção apropriada
+            const nomeLower = forma.nomeformapagamento.toLowerCase();
             
             if (nomeLower.includes('pix')) {
                 mostrarPix();
+                document.getElementById('btn-confirmar-pagamento').style.display = 'block'; // PIX já pode confirmar
             } else if (nomeLower.includes('cartão') || nomeLower.includes('cartao')) {
                 mostrarCartao();
+                // O botão de confirmação só aparece após a validação do cartão
             } else {
                 // Forma de pagamento genérica
-                if (confirm(`Confirmar pagamento via ${forma.nomeformadepagamento}?`)) {
-                    confirmarPagamento();
-                }
+                document.getElementById('btn-confirmar-pagamento').style.display = 'block';
             }
         }
 
         // Mostrar seção PIX
         function mostrarPix() {
-            document.getElementById('pix-section').style.display = 'block';
+            document.getElementById('pix-section').style.display = 'flex';
             gerarQRCodePix();
         }
 
         // Mostrar seção Cartão
         function mostrarCartao() {
-            document.getElementById('cartao-section').style.display = 'block';
+            document.getElementById('cartao-section').style.display = 'flex';
             
             // Formatar número do cartão
             const numeroCartao = document.getElementById('numero-cartao');
@@ -216,9 +237,9 @@
 
         // Gerar QR Code PIX
         function gerarQRCodePix() {
-            const chavePix = "pagamento@zenite.com";
-            const nomeRecebedor = "ZENITE STORE";
-            const cidade = "CAMPO MOURAO";
+            const chavePix = "09199562979";
+            const nomeRecebedor = "MARIA ELISA MURBACK MARCELINO";
+            const cidade = "MAMBORE";
 
             const payload = gerarPayloadPix(chavePix, valorTotal.toString(), nomeRecebedor, cidade);
 
@@ -309,12 +330,12 @@
             
             if (valido) {
                 status.textContent = "Cartão válido ✅";
-                status.style.color = "green";
-                document.getElementById('btn-confirmar-cartao').style.display = 'block';
+                status.style.color = "var(--color-accent-pink)";
+                document.getElementById('btn-confirmar-pagamento').style.display = 'block';
             } else {
                 status.textContent = "Cartão inválido ❌";
                 status.style.color = "red";
-                document.getElementById('btn-confirmar-cartao').style.display = 'none';
+                document.getElementById('btn-confirmar-pagamento').style.display = 'none';
             }
         }
 
