@@ -12,7 +12,7 @@ Curso Técnico Integrado em Informática para Internet\
 UTFPR Campus Campo Mourão\
 Professor Radames\
 Aluna Maria Elisa Murback\
-Data de entrega 04/12/2025\
+Data de entrega 04/12/2025
 
 
 
@@ -26,6 +26,7 @@ Concluo esta etapa com um conhecimento muito mais sólido, especialmente no back
 Considere continuar dando aula pra gente no terceiro ano.
 
 Obrigada!
+
 
 
 
