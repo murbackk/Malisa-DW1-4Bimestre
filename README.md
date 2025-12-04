@@ -1,19 +1,31 @@
-📌 Descrição do Projeto
+#####📌 Descrição do Projeto
 
 O ZeniteStore é um sistema web full-stack desenvolvido para gerenciar todas as operações de uma loja de pequeno ou médio porte, integrando um backend em Node.js/Express e um frontend modular em HTML/CSS/JavaScript. O sistema oferece um ambiente completo para administração de vendas, produtos, categorias, clientes, usuários, pedidos e pagamentos, incluindo suporte para upload de imagens. O backend segue uma arquitetura organizada com controllers, rotas e integração com PostgreSQL, enquanto o frontend utiliza requisições JSON e manipulação dinâmica do DOM para exibir cadastros, relatórios, carrinho, fluxos de venda e autenticação. Com diferenciação de permissões (gerente e funcionário), armazenamento de sessões, diretórios dedicados a uploads e documentação, o ZeniteStore consolida estoque, fluxo de vendas, controle de usuários e recursos administrativos em um único sistema eficiente, moderno e extensível.
 
 
-*Parte 2 - Relatório do projeto do 4o Bimestre*
+
+
+#####**Parte 2 - Relatório do projeto do 4o Bimestre**
 
 
 Disciplina DW1
 
 
 Curso Técnico Integrado em Informática para Internet
+
+
 UTFPR Campus Campo Mourão
+
+
 Professor Radames
+
+
 Aluna Maria Elisa Murback
+
+
 Data de entrega 04/12/2025
+
+
 
 O desenvolvimento do meu projeto foi uma experiência muito desafiadora. O objetivo inicial era construir o Site Distrital do Interact, um sistema web full-stack para gerenciar vendas, produtos, usuários, categorias, pedidos e pagamentos. Embora eu já tivesse uma noção básica sobre desenvolvimento web, essa foi a primeira vez em que precisei juntar tudo: banco de dados, backend e frontend, dentro de um sistema ORGANIZADO e funcionando. O que eu esperava no começo era criar algo simples, principalmente no visual e na estrutura. Porém, ao decorrer do ano, o resultado final acabou sendo completamente diferente do que eu imaginava em termos de arquitetura do sistema e organização.
 Um dos maiores aprendizados foi entender como construir um backend bem organizado. 	Seguindo padrões que antes pareciam muito complexos: dividir controllers, rotas, separar as responsabilidades e integrar tudo ao banco de dados PostgreSQL. Com isso, aprendi na prática como lidar com consultas SQL, relacionamentos entre tabelas, autenticação, permissões (diferenciando gerente e funcionário), sessões de login e até uploads de imagens. Essa experiência foi tão marcante que, ao longo do processo, percebi que tenho mais afinidade com backend do que com frontend. Gostei da lógica, da organização, da forma como tudo precisa conversar, e de como cada parte influencia diretamente no funcionamento do sistema. 
@@ -25,4 +37,5 @@ Concluo esta etapa com um conhecimento muito mais sólido, especialmente no back
 Considere continuar dando aula pra gente no terceiro ano.
 
 Obrigada!
+
 
